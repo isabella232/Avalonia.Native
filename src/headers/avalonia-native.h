@@ -4,6 +4,9 @@
 
 struct IAvnWindowEvents;
 struct IAvnWindow;
+struct IAvnPlatformDragSource;
+struct IAvnPlatformDragSourceEvents;
+struct IAvnDataObject;
 struct IAvnMacOptions;
 struct IAvnPlatformThreadingInterface;
 
@@ -51,6 +54,14 @@ enum AvnInputModifiers
     LeftMouseButton = 16,
     RightMouseButton = 32,
     MiddleMouseButton = 64
+};
+
+enum AvnDragDropEffects
+{
+    AvnDragDropNone = 0x0,
+    AvnDragDropCopy = 0x1,
+    AvnDragDropMove = 0x2,
+    AvnDragDropLink = 0x4
 };
 
 AVNCOM(IAvaloniaNativeFactory, 01) : virtual IUnknown
@@ -128,6 +139,29 @@ AVNCOM(IAvnPlatformThreadingInterface, 0a) : virtual IUnknown
     // Can't pass int* to sharpgentools for some reason
     virtual void Signal(int priority) = 0;
     virtual IUnknown* StartTimer(int priority, int ms, IAvnActionCallback* callback) = 0;
+};
+
+AVNCOM(IAvnPlatformDragSource, 0b) : virtual IUnknown
+{
+    virtual void DoDragDrop(IAvnDataObject* data, AvnDragDropEffects allowedEffects) = 0;
+};
+
+AVNCOM(IAvnPlatformDragSourceEvents, 0c) : virtual IUnknown
+{
+    virtual void OnDragDropCompleted () = 0;
+};
+
+AVNCOM(IAvnDataObject, 0d) : virtual IUnknown
+{
+   /* virtual bool Contains(string dataFormat) = 0;
+    
+    virtual void* Get(string dataFormat) = 0;
+    
+    virtual string** GetDataFormats() = 0;
+    
+    virtual string** GetFileNames()= 0;
+    
+    virtual string* GetText()= 0;*/
 };
 
 extern "C" IAvaloniaNativeFactory* CreateAvaloniaNative();
