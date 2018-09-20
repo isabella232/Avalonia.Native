@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Avalonia.Input;
+using Avalonia.Input.Raw;
+using Avalonia.Native.Interop;
 
 namespace Avalonia.Native
 {
@@ -8,19 +10,21 @@ namespace Avalonia.Native
     {
         IAvnDataObject _native;
 
-        public bool Contains(string dataFormat)
+        public DraggingInfo(IAvnDataObject native)
         {
-            throw new NotImplementedException();
+            _native = native;
         }
+
+        public bool Contains(string dataFormat) => _native.Contains(dataFormat);
 
         public object Get(string dataFormat)
         {
-            throw new NotImplementedException();
+           return _native.Get(dataFormat); // todo intptr to object???
         }
 
         public IEnumerable<string> GetDataFormats()
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
 
         public IEnumerable<string> GetFileNames()
@@ -30,7 +34,9 @@ namespace Avalonia.Native
 
         public string GetText()
         {
-            throw new NotImplementedException();
+            _native.GetText(out uint length);
+
+            return "";
         }
     }
 }

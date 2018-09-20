@@ -18,10 +18,12 @@ namespace Avalonia.Native
 
         private bool _deferredRendering = false;
         private readonly IMouseDevice _mouse;
+        private readonly IDragDropDevice _dragDevice;
 
         public WindowBaseImpl()
         {
             _mouse = AvaloniaLocator.Current.GetService<IMouseDevice>();
+            _dragDevice = AvaloniaLocator.Current.GetService<IDragDropDevice>();
         }
 
         protected void Init(IAvnWindowBase window)
@@ -103,6 +105,11 @@ namespace Avalonia.Native
             {
                 _parent.RawMouseEvent(type, timeStamp, modifiers, point, delta);
             }
+
+            public AvnDragDropEffects RawDragEvent(AvnRawDragEventType type, AvnPoint point, IAvnDataObject info, AvnDragDropEffects operation, AvnInputModifiers modifiers)
+            {
+                return _parent.RawDragEvent(type, point, info, operation, modifiers);
+            }
         }
 
 
@@ -125,6 +132,20 @@ namespace Avalonia.Native
                     Input?.Invoke(new RawMouseEventArgs(_mouse, timeStamp, _inputRoot, (RawMouseEventType)type, new Point(point.X, point.Y), (InputModifiers)modifiers));
                     break;
             }
+        }
+
+        public AvnDragDropEffects RawDragEvent(AvnRawDragEventType type, AvnPoint point, IAvnDataObject info, AvnDragDropEffects operation, AvnInputModifiers modifiers)
+        {
+            var args = new RawDragEvent(_dragDevice,
+                                        (RawDragEventType)type,
+                                        _inputRoot,
+                                        new Point(point.X, point.Y),
+                                        new DraggingInfo(info),
+                                        (DragDropEffects)operation,
+                                        (InputModifiers)modifiers);
+            Input?.Invoke(args);
+
+            return (AvnDragDropEffects)args.Effects;
         }
 
         public void Resize(Size clientSize)

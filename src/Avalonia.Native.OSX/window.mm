@@ -1,4 +1,5 @@
 #include "common.h"
+#include "DraggingInfo.hpp"
 
 class WindowBaseImpl;
 
@@ -15,6 +16,7 @@ class WindowBaseImpl;
 class WindowBaseImpl : public ComSingleObject<IAvnWindowBase, &IID_IAvnWindowBase>
 {
 public:
+    
     AvnView* View;
     AvnWindow* Window;
     ComPtr<IAvnWindowBaseEvents> BaseEvents;
@@ -321,6 +323,43 @@ protected:
         rv |= RightMouseButton;
     
     return (AvnInputModifiers)rv;
+}
+
+- (NSDragOperation) SendRawDragEvent:(id<NSDraggingInfo>) sender withEventType:(AvnRawDragEventType) type
+{   
+    auto dragOp = DraggingInfo::ConvertDragOperation([sender draggingSourceOperationMask]);
+    DraggingInfo info = DraggingInfo(sender);
+    
+    auto pt = [self translateLocalPoint:info.GetLocation()];
+    
+    auto effects = _parent->BaseEvents->RawDragEvent(type, pt, &info, dragOp, [self getModifiers:NSEvent.modifierFlags]);
+    
+    return DraggingInfo::ConvertDragOperation(effects);
+}
+
+- (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender
+{
+    return [self SendRawDragEvent:sender withEventType:DragEnter];
+}
+
+- (NSDragOperation)draggingUpdated:(id<NSDraggingInfo>)sender
+{
+    return [self SendRawDragEvent:sender withEventType:DragOver];
+}
+
+- (void)draggingExited:(id<NSDraggingInfo>)sender
+{
+    [self SendRawDragEvent:sender withEventType:DragLeave];
+}
+
+- (BOOL)prepareForDragOperation:(id<NSDraggingInfo>)sender
+{
+    return [self SendRawDragEvent:sender withEventType:DragOver] != NSDragOperationNone;
+}
+
+- (BOOL)performDragOperation:(id<NSDraggingInfo>)sender
+{
+    return [self SendRawDragEvent:sender withEventType:Drop] != NSDragOperationNone;
 }
 @end
 

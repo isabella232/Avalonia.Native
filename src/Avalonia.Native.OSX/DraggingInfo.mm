@@ -1,29 +1,83 @@
 #include "common.h"
+#include "DraggingInfo.hpp"
 
-class DraggingInfo : public ComSingleObject<IAvnDataObject, &IID_IAvnDataObject>
+DraggingInfo::DraggingInfo (id<NSDraggingInfo> draggingInfo)
 {
-private:
-    
-    public:
-    virtual HRESULT Contains(const wchar_t* dataFormat, bool* ret){return S_OK;};
-    
-    virtual HRESULT Get(const wchar_t* dataFormat, void** ret){return S_OK;};
-    
-    /**
-     * Gets the data formats as strings.
-     * The user calls this method twice, the first time ret is nullptr and the method returns the number of
-     * strings to be returned. This is known as query mode. The second time the user calls it, ret is not
-     * nullptr and will be the pointer will be set.
-     */
-    virtual HRESULT GetDataFormats (uint32_t* outNumStrings, void** retBuf){return S_OK;};
-    
-    virtual HRESULT GetFileNames(uint32_t* outNumStrings, uint32_t** bufOut){return S_OK;};
-    
-    virtual HRESULT GetText(uint32_t* outLength, void* ret){return S_OK;};
-};
-
-
-extern IAvnDataObject* CreateDraggingInfo()
-{
-    return  new DraggingInfo();
 }
+
+HRESULT DraggingInfo::Contains(const wchar_t* dataFormat, bool* ret)
+{
+    return S_OK;
+}
+
+HRESULT DraggingInfo::Get(const wchar_t* dataFormat, void** ret)
+{
+    return S_OK;
+}
+
+HRESULT DraggingInfo::GetDataFormats (uint32_t* outNumStrings, void** retBuf)
+{
+    return S_OK;
+}
+
+HRESULT DraggingInfo::GetFileNames(uint32_t* outNumStrings, uint32_t** bufOut)
+{
+    return S_OK;
+}
+
+HRESULT DraggingInfo::GetText(uint32_t* outLength, void* ret)
+{
+    return S_OK;
+}
+
+AvnPoint DraggingInfo::GetLocation()
+{
+    auto pt = [_draggingInfo draggingLocation];
+    
+    return AvnPoint{ pt.x, pt.y };
+}
+
+AvnDragDropEffects DraggingInfo::ConvertDragOperation(NSDragOperation d)
+{
+    int result = AvnDragDropEffects::AvnDragDropNone;
+    
+    if (d & AvnDragDropEffects::AvnDragDropCopy)
+    {
+        result |= AvnDragDropEffects::AvnDragDropCopy;
+    }
+    
+    if(d & AvnDragDropEffects::AvnDragDropLink)
+    {
+        result |= AvnDragDropEffects::AvnDragDropLink;
+    }
+    
+    if(d & AvnDragDropEffects::AvnDragDropMove)
+    {
+        result |= AvnDragDropEffects::AvnDragDropMove;
+    }
+    
+    return (AvnDragDropEffects) result;
+}
+
+NSDragOperation DraggingInfo::ConvertDragOperation(AvnDragDropEffects d)
+{
+    int result = NSDragOperationNone;
+    
+    if(d & AvnDragDropCopy)
+    {
+        result |= NSDragOperationCopy;
+    }
+    
+    if (d & AvnDragDropLink)
+    {
+        result |= NSDragOperationLink;
+    }
+    
+    if(d & AvnDragDropMove)
+    {
+        result |= NSDragOperationMove;
+    }
+    
+    return result;
+}
+

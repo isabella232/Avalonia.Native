@@ -65,6 +65,14 @@ enum AvnDragDropEffects
     AvnDragDropLink = 0x4
 };
 
+enum AvnRawDragEventType
+{
+    DragEnter,
+    DragOver,
+    DragLeave,
+    Drop
+};
+
 AVNCOM(IAvaloniaNativeFactory, 01) : virtual IUnknown
 {
 public:
@@ -72,7 +80,6 @@ public:
     virtual IAvnMacOptions* GetMacOptions() = 0;
     virtual HRESULT CreateWindow(IAvnWindowEvents* cb, IAvnWindow** ppv) = 0;
     virtual HRESULT CreatePlatformThreadingInterface(IAvnPlatformThreadingInterface** ppv) = 0;
-    virtual HRESULT CreateDraggingInfo(IAvnDataObject** ppv) = 0;
 };
 
 AVNCOM(IAvnWindowBase, 02) : virtual IUnknown
@@ -103,6 +110,11 @@ AVNCOM(IAvnWindowBaseEvents, 04) : IUnknown
                                 AvnInputModifiers modifiers,
                                 AvnPoint point,
                                 AvnVector delta) = 0;
+    virtual AvnDragDropEffects RawDragEvent (AvnRawDragEventType type,
+                               AvnPoint point,
+                               IAvnDataObject* info,
+                               AvnDragDropEffects operation,
+                               AvnInputModifiers modifiers) = 0;
 };
 
 
@@ -155,9 +167,9 @@ AVNCOM(IAvnPlatformDragSourceEvents, 0c) : virtual IUnknown
 
 AVNCOM(IAvnDataObject, 0d) : virtual IUnknown
 {
-    virtual HRESULT Contains(const wchar_t* dataFormat, bool* ret) = 0;
+    virtual HRESULT Contains(const wchar_t* dataFormat, bool* retOut) = 0;
     
-    virtual HRESULT Get(const wchar_t* dataFormat, void** ret) = 0;
+    virtual HRESULT Get(const wchar_t* dataFormat, void** retOut) = 0;
     
     /**
      * Gets the data formats as strings.
@@ -169,7 +181,7 @@ AVNCOM(IAvnDataObject, 0d) : virtual IUnknown
     
     virtual HRESULT GetFileNames(uint32_t* outNumStrings, uint32_t** bufOut)= 0;
     
-    virtual HRESULT GetText(uint32_t* outLength, void* ret)= 0;
+    virtual HRESULT GetText(uint32_t* outLength, char* bufRet)= 0;
 };
 
 extern "C" IAvaloniaNativeFactory* CreateAvaloniaNative();

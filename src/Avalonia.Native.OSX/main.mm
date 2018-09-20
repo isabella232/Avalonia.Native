@@ -85,12 +85,6 @@ public:
         *ppv = CreatePlatformThreading();
         return S_OK;
     };
-    
-    virtual HRESULT CreateDraggingInfo (IAvnDataObject** ppv)
-    {
-        *ppv = ::CreateDraggingInfo();
-        return S_OK;
-    }
 };
 
 extern "C" IAvaloniaNativeFactory* CreateAvaloniaNative()
