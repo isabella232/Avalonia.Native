@@ -1,4 +1,5 @@
 #include "com.h"
+#include <stdint.h>
 
 #define AVNCOM(name, id) COMINTERFACE(name, 2e2cda0a, 9ae5, 4f1b, 8e, 20, 08, 1a, 04, 27, 9f, id)
 
@@ -71,6 +72,7 @@ public:
     virtual IAvnMacOptions* GetMacOptions() = 0;
     virtual HRESULT CreateWindow(IAvnWindowEvents* cb, IAvnWindow** ppv) = 0;
     virtual HRESULT CreatePlatformThreadingInterface(IAvnPlatformThreadingInterface** ppv) = 0;
+    virtual HRESULT CreateDraggingInfo(IAvnDataObject** ppv) = 0;
 };
 
 AVNCOM(IAvnWindowBase, 02) : virtual IUnknown
@@ -153,15 +155,21 @@ AVNCOM(IAvnPlatformDragSourceEvents, 0c) : virtual IUnknown
 
 AVNCOM(IAvnDataObject, 0d) : virtual IUnknown
 {
-   /* virtual bool Contains(string dataFormat) = 0;
+    virtual HRESULT Contains(const wchar_t* dataFormat, bool* ret) = 0;
     
-    virtual void* Get(string dataFormat) = 0;
+    virtual HRESULT Get(const wchar_t* dataFormat, void** ret) = 0;
     
-    virtual string** GetDataFormats() = 0;
+    /**
+     * Gets the data formats as strings.
+     * The user calls this method twice, the first time ret is nullptr and the method returns the number of
+     * strings to be returned. This is known as query mode. The second time the user calls it, ret is not
+     * nullptr and will be the pointer will be set.
+     */
+    virtual HRESULT GetDataFormats (uint32_t* outNumStrings, void** retBuf) = 0;
     
-    virtual string** GetFileNames()= 0;
+    virtual HRESULT GetFileNames(uint32_t* outNumStrings, uint32_t** bufOut)= 0;
     
-    virtual string* GetText()= 0;*/
+    virtual HRESULT GetText(uint32_t* outLength, void* ret)= 0;
 };
 
 extern "C" IAvaloniaNativeFactory* CreateAvaloniaNative();

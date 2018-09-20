@@ -9,4 +9,5 @@
 
 extern IAvnPlatformThreadingInterface* CreatePlatformThreading();
 extern IAvnWindow* CreateAvnWindow(IAvnWindowEvents*events);
+extern IAvnDataObject* CreateDraggingInfo ();
 #endif

@@ -22,6 +22,9 @@
         <map interface="*.Events" callback="true" autogen-shadow="true"/>
         <map interface="*.Callback" callback="true" autogen-shadow="true"/>
         <map param=".*::.*::ppv" return="true"/>
-        <map param=".*::.*::ret" return="true"/>
+        <map param=".*::.*::ret" attribute="out" return="true"/>
+        <map param=".*::.*::out.*" attribute="out"/>
+        <map param=".*::.*::bufOut.*" attribute="out buffer" />
+        <map param=".*::.*::bufRet.*" attribute="out buffer" return="true" />
     </mapping>
 </config>

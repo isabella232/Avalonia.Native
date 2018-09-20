@@ -6,6 +6,8 @@ namespace Avalonia.Native
 {
     public class DraggingInfo : IDataObject
     {
+        IAvnDataObject _native;
+
         public bool Contains(string dataFormat)
         {
             throw new NotImplementedException();
