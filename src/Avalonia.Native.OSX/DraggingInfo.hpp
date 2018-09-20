@@ -28,7 +28,7 @@ public:
     
     virtual HRESULT GetFileNames(uint32_t* outNumStrings, uint32_t** bufOut);
     
-    virtual HRESULT GetText(uint32_t* outLength, void* ret);
+    virtual HRESULT GetText(void** retOut);
     
     AvnPoint GetLocation ();
     

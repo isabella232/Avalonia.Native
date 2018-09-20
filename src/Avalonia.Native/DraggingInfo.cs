@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Native.Interop;
@@ -24,19 +26,19 @@ namespace Avalonia.Native
 
         public IEnumerable<string> GetDataFormats()
         {
-            throw new NotSupportedException();
+            return Enumerable.Empty<string>();
         }
 
         public IEnumerable<string> GetFileNames()
         {
-            throw new NotImplementedException();
+            return Enumerable.Empty<string>();
         }
 
         public string GetText()
         {
-            _native.GetText(out uint length);
+            _native.GetText(out IntPtr stringPtr);
 
-            return "";
+            return Marshal.PtrToStringAnsi(stringPtr);
         }
     }
 }

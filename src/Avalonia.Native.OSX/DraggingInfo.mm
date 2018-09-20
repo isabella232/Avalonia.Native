@@ -3,6 +3,7 @@
 
 DraggingInfo::DraggingInfo (id<NSDraggingInfo> draggingInfo)
 {
+    _draggingInfo = draggingInfo;
 }
 
 HRESULT DraggingInfo::Contains(const wchar_t* dataFormat, bool* ret)
@@ -25,8 +26,13 @@ HRESULT DraggingInfo::GetFileNames(uint32_t* outNumStrings, uint32_t** bufOut)
     return S_OK;
 }
 
-HRESULT DraggingInfo::GetText(uint32_t* outLength, void* ret)
+HRESULT DraggingInfo::GetText(void** retOut)
 {
+    auto string = [_draggingInfo.draggingPasteboard stringForType:NSStringPboardType];
+    const char* cstring = [string UTF8String];
+    
+    *retOut = (void*)cstring;
+    
     return S_OK;
 }
 

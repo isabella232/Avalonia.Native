@@ -181,7 +181,7 @@ AVNCOM(IAvnDataObject, 0d) : virtual IUnknown
     
     virtual HRESULT GetFileNames(uint32_t* outNumStrings, uint32_t** bufOut)= 0;
     
-    virtual HRESULT GetText(uint32_t* outLength, char* bufRet)= 0;
+    virtual HRESULT GetText(void** outPtr)= 0;
 };
 
 extern "C" IAvaloniaNativeFactory* CreateAvaloniaNative();
