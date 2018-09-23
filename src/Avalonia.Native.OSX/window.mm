@@ -4,8 +4,9 @@
 class WindowBaseImpl;
 
 @interface AvnView : NSView
--(AvnView*)  initWithParent: (WindowBaseImpl*) parent;
--(NSEvent*)  lastMouseDownEvent;
+-(AvnView*) initWithParent: (WindowBaseImpl*) parent;
+-(NSEvent*) lastMouseDownEvent;
+-(AvnPoint) translateLocalPoint:(AvnPoint)pt;
 @end
 
 @interface AvnWindow : NSWindow <NSWindowDelegate>
@@ -20,11 +21,16 @@ public:
     AvnView* View;
     AvnWindow* Window;
     ComPtr<IAvnWindowBaseEvents> BaseEvents;
+    AvnPoint lastPositionSet;
     WindowBaseImpl(IAvnWindowBaseEvents* events)
     {
         BaseEvents = events;
         View = [[AvnView alloc] initWithParent:this];
         Window = [[AvnWindow alloc] initWithParent:this];
+        
+        lastPositionSet.X = 100;
+        lastPositionSet.Y = 100;
+        
         [Window setStyleMask:NSWindowStyleMaskBorderless];
         [Window setBackingType:NSBackingStoreBuffered];
         [Window setContentView: View];
@@ -32,8 +38,18 @@ public:
     
     virtual HRESULT Show()
     {
+        SetPosition(lastPositionSet);
         UpdateStyle();
         [Window makeKeyAndOrderFront:Window];
+        return S_OK;
+    }
+    
+    virtual HRESULT Hide ()
+    {
+        if(Window != nullptr)
+        {
+            [Window orderOut:Window];
+        }
         return S_OK;
     }
     
@@ -50,6 +66,21 @@ public:
         auto frame = [View frame];
         ret->Width = frame.size.width;
         ret->Height = frame.size.height;
+        return S_OK;
+    }
+    
+    virtual HRESULT GetScaling (double* ret)
+    {
+        if(ret == nullptr)
+            return E_POINTER;
+        
+        if(Window == nullptr)
+        {
+            *ret = 1;
+            return S_OK;
+        }
+        
+        *ret = [Window backingScaleFactor];
         return S_OK;
     }
     
@@ -74,6 +105,59 @@ public:
         }
         
         [Window performWindowDragWithEvent:lastEvent];
+    }
+    
+    
+    virtual HRESULT GetPosition (AvnPoint* ret)
+    {
+        if(ret == nullptr)
+        {
+            return E_POINTER;
+        }
+        
+        auto frame = [Window frame];
+        
+        ret->X = frame.origin.x;
+        ret->Y = frame.origin.y + frame.size.height;
+        
+        *ret = ConvertPointY(*ret);
+        
+        return S_OK;
+    }
+    
+    virtual void SetPosition (AvnPoint point)
+    {
+        lastPositionSet = point;
+        [Window setFrameTopLeftPoint:ToNSPoint(ConvertPointY(point))];
+    }
+    
+    virtual HRESULT PointToClient (AvnPoint point, AvnPoint* ret)
+    {
+        if(ret == nullptr)
+        {
+            return E_POINTER;
+        }
+        
+        point = ConvertPointY(point);
+        auto viewPoint = [Window convertPointFromScreen:ToNSPoint(point)];
+        
+        *ret = [View translateLocalPoint:ToAvnPoint(viewPoint)];
+        
+        return S_OK;
+    }
+    
+    virtual HRESULT PointToScreen (AvnPoint point, AvnPoint* ret)
+    {
+        if(ret == nullptr)
+        {
+            return E_POINTER;
+        }
+        
+        auto cocoaViewPoint =  ToNSPoint([View translateLocalPoint:point]);
+        auto cocoaScreenPoint = [Window convertPointToScreen:cocoaViewPoint];
+        *ret = ConvertPointY(ToAvnPoint(cocoaScreenPoint));
+        
+        return S_OK;
     }
     
 protected:
@@ -162,7 +246,7 @@ protected:
     free(ptr);
 }
 
-- (AvnPoint)translateLocalPoint:(AvnPoint)pt
+- (AvnPoint) translateLocalPoint:(AvnPoint)pt
 {
     pt.Y = [self bounds].size.height - pt.Y;
     return pt;
@@ -195,7 +279,6 @@ protected:
             return;
         }
     }
-    
     
     auto timestamp = [event timestamp] * 1000;
     auto modifiers = [self getModifiers:[event modifierFlags]];
@@ -407,6 +490,32 @@ protected:
 
 @end
 
+class PopupImpl : public WindowBaseImpl, public IAvnPopup
+{
+private:
+    BEGIN_INTERFACE_MAP()
+    INHERIT_INTERFACE_MAP(WindowBaseImpl)
+    INTERFACE_MAP_ENTRY(IAvnPopup, IID_IAvnPopup)
+    END_INTERFACE_MAP()
+    ComPtr<IAvnWindowEvents> WindowEvents;
+    PopupImpl(IAvnWindowEvents* events) : WindowBaseImpl(events)
+    {
+        WindowEvents = events;
+        [Window setLevel:NSPopUpMenuWindowLevel];
+    }
+    
+protected:
+    virtual NSWindowStyleMask GetStyle()
+    {
+        return NSWindowStyleMaskBorderless;
+    }
+};
+
+extern IAvnPopup* CreateAvnPopup(IAvnWindowEvents*events)
+{
+    IAvnPopup* ptr = dynamic_cast<IAvnPopup*>(new PopupImpl(events));
+    return ptr;
+}
 
 class WindowImpl : public WindowBaseImpl, public IAvnWindow
 {
@@ -451,7 +560,6 @@ protected:
         return s;
     }
 };
-
 
 extern IAvnWindow* CreateAvnWindow(IAvnWindowEvents*events)
 {
