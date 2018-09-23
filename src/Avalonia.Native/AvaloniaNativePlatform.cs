@@ -68,7 +68,6 @@ namespace Avalonia.Native
 
                 .Bind<IKeyboardDevice>().ToConstant(KeyboardDevice)
                 .Bind<IMouseDevice>().ToConstant(MouseDevice)
-                .Bind<IPlatformDragSource>().ToConstant(new DragSource(_factory))
                 .Bind<IPlatformSettings>().ToConstant(this)
                 .Bind<IWindowingPlatform>().ToConstant(this)
                 .Bind<ISystemDialogImpl>().ToSingleton<SystemDialogImpl>()
@@ -76,6 +75,9 @@ namespace Avalonia.Native
                 .Bind<IRenderLoop>().ToConstant(new RenderLoop())
                 .Bind<IRenderTimer>().ToConstant(new DefaultRenderTimer(60))
                 .Bind<IPlatformThreadingInterface>().ToConstant(new PlatformThreadingInterface(_factory.CreatePlatformThreadingInterface()));
+
+
+            AvaloniaLocator.CurrentMutable.Bind<IPlatformDragSource>().ToConstant(new DragSource(_factory));
         }
 
         public IWindowImpl CreateWindow()
