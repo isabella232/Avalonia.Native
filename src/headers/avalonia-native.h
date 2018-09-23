@@ -11,6 +11,8 @@ struct IAvnPlatformDragSourceEvents;
 struct IAvnDataObject;
 struct IAvnMacOptions;
 struct IAvnPlatformThreadingInterface;
+struct IAvnSystemDialogEvents;
+struct IAvnSystemDialogs;
 
 struct AvnSize
 {
@@ -82,6 +84,7 @@ public:
     virtual HRESULT CreateWindow(IAvnWindowEvents* cb, IAvnWindow** ppv) = 0;
     virtual HRESULT CreatePopup (IAvnWindowEvents* cb, IAvnPopup** ppv) = 0;
     virtual HRESULT CreatePlatformThreadingInterface(IAvnPlatformThreadingInterface** ppv) = 0;
+    virtual HRESULT CreateSystemDialogs (IAvnSystemDialogs** ppv) = 0;
     virtual HRESULT CreatePlatformDragSource (IAvnPlatformDragSource** ppv) = 0;
 };
 
@@ -167,6 +170,34 @@ AVNCOM(IAvnPlatformThreadingInterface, 0b) : virtual IUnknown
     // Can't pass int* to sharpgentools for some reason
     virtual void Signal(int priority) = 0;
     virtual IUnknown* StartTimer(int priority, int ms, IAvnActionCallback* callback) = 0;
+};
+
+AVNCOM(IAvnSystemDialogEvents, 0c) : virtual IUnknown
+{
+    virtual void OnCompleted (int numResults, void* ptrFirstResult) = 0;
+};
+
+AVNCOM(IAvnSystemDialogs, 0d) : virtual IUnknown
+{
+    virtual void SelectFolderDialog (IAvnWindow* parentWindowHandle,
+                                     IAvnSystemDialogEvents* events,
+                                     const char* title,
+                                     const char* initialPath) = 0;
+    
+    virtual void OpenFileDialog (IAvnWindow* parentWindowHandle,
+                                 IAvnSystemDialogEvents* events,
+                                 bool allowMultiple,
+                                 const char* title,
+                                 const char* initialDirectory,
+                                 const char* initialFile,
+                                 const char* filters) = 0;
+    
+    virtual void SaveFileDialog (IAvnWindow* parentWindowHandle,
+                                 IAvnSystemDialogEvents* events,
+                                 const char* title,
+                                 const char* initialDirectory,
+                                 const char* initialFile,
+                                 const char* filters) = 0;
 };
 
 AVNCOM(IAvnPlatformDragSource, 0b) : virtual IUnknown

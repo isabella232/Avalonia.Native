@@ -95,6 +95,12 @@ public:
         return S_OK;
     }
     
+    virtual HRESULT CreateSystemDialogs(IAvnSystemDialogs** ppv)
+    {
+        *ppv = ::CreateSystemDialogs();
+        return  S_OK;
+    }
+    
     virtual HRESULT CreatePlatformDragSource (IAvnPlatformDragSource** ppv)
     {
         //*ppv =

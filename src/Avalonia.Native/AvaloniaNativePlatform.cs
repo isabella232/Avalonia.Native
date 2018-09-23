@@ -74,10 +74,8 @@ namespace Avalonia.Native
                 .Bind<IClipboard>().ToSingleton<ClipboardImpl>()
                 .Bind<IRenderLoop>().ToConstant(new RenderLoop())
                 .Bind<IRenderTimer>().ToConstant(new DefaultRenderTimer(60))
+                .Bind<ISystemDialogImpl>().ToConstant(new SystemDialogs(_factory.CreateSystemDialogs()))
                 .Bind<IPlatformThreadingInterface>().ToConstant(new PlatformThreadingInterface(_factory.CreatePlatformThreadingInterface()));
-
-
-            AvaloniaLocator.CurrentMutable.Bind<IPlatformDragSource>().ToConstant(new DragSource(_factory));
         }
 
         public IWindowImpl CreateWindow()
