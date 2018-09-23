@@ -33,6 +33,7 @@ public:
     {
         BaseEvents = events;
         View = [[AvnView alloc] initWithParent:this];
+        
         Window = [[AvnWindow alloc] initWithParent:this];
         
         lastPositionSet.X = 100;

@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		37364451215842830085FC33 /* DragSource.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3736444E215842830085FC33 /* DragSource.mm */; };
+		37364452215842830085FC33 /* DraggingInfo.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 3736444F215842830085FC33 /* DraggingInfo.hpp */; };
+		37364453215842830085FC33 /* DraggingInfo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37364450215842830085FC33 /* DraggingInfo.mm */; };
 		37C09D8821580FE4006A6758 /* SystemDialogs.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37C09D8721580FE4006A6758 /* SystemDialogs.mm */; };
 		AB00E4F72147CA920032A60A /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB00E4F62147CA920032A60A /* main.mm */; };
 		AB661C1E2148230F00291242 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB661C1D2148230F00291242 /* AppKit.framework */; };
@@ -15,6 +18,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3736444E215842830085FC33 /* DragSource.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DragSource.mm; sourceTree = "<group>"; };
+		3736444F215842830085FC33 /* DraggingInfo.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DraggingInfo.hpp; sourceTree = "<group>"; };
+		37364450215842830085FC33 /* DraggingInfo.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DraggingInfo.mm; sourceTree = "<group>"; };
 		379A4506214D0F6500CC143D /* headers */ = {isa = PBXFileReference; lastKnownFileType = folder; name = headers; path = ../headers; sourceTree = "<group>"; };
 		37C09D8721580FE4006A6758 /* SystemDialogs.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SystemDialogs.mm; sourceTree = "<group>"; };
 		37C09D8A21581EF2006A6758 /* window.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = window.h; sourceTree = "<group>"; };
@@ -51,12 +57,12 @@
 			children = (
 				379A4506214D0F6500CC143D /* headers */,
 				AB8F7D6A21482D7F0057DBA5 /* platformthreading.mm */,
-				37A1A4E62153D7BA00E3003A /* DraggingInfo.mm */,
-				37A1A4E92153E38300E3003A /* DraggingInfo.hpp */,
-				37C09D852157F6D6006A6758 /* DragSource.mm */,
 				AB661C212148288600291242 /* common.h */,
 				AB661C1F2148286E00291242 /* window.mm */,
 				37C09D8A21581EF2006A6758 /* window.h */,
+				3736444F215842830085FC33 /* DraggingInfo.hpp */,
+				37364450215842830085FC33 /* DraggingInfo.mm */,
+				3736444E215842830085FC33 /* DragSource.mm */,
 				AB00E4F62147CA920032A60A /* main.mm */,
 				37C09D8721580FE4006A6758 /* SystemDialogs.mm */,
 				AB7A61F02147C815003C5833 /* Products */,
@@ -79,7 +85,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				37A1A4EB2153E38300E3003A /* DraggingInfo.hpp in Headers */,
+				37364452215842830085FC33 /* DraggingInfo.hpp in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -140,9 +146,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				37C09D862157F6D6006A6758 /* DragSource.mm in Sources */,
-				37A1A4E72153D7BB00E3003A /* DraggingInfo.mm in Sources */,
 				AB8F7D6B21482D7F0057DBA5 /* platformthreading.mm in Sources */,
+				37364451215842830085FC33 /* DragSource.mm in Sources */,
+				37364453215842830085FC33 /* DraggingInfo.mm in Sources */,
 				AB00E4F72147CA920032A60A /* main.mm in Sources */,
 				37C09D8821580FE4006A6758 /* SystemDialogs.mm in Sources */,
 				AB661C202148286E00291242 /* window.mm in Sources */,

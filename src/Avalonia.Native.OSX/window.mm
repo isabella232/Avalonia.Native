@@ -1,5 +1,6 @@
 #include "common.h"
 #include "window.h"
+#include "DraggingInfo.hpp"
 
 @implementation AvnView
 {
@@ -292,6 +293,8 @@
     self = [super init];
     _parent = parent;
     [self setDelegate:self];
+    
+    [self registerForDraggedTypes:[NSArray arrayWithObjects:@"public.data", nil]];
     return self;
 }
 

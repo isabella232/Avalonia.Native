@@ -200,17 +200,17 @@ AVNCOM(IAvnSystemDialogs, 0d) : virtual IUnknown
                                  const char* filters) = 0;
 };
 
-AVNCOM(IAvnPlatformDragSource, 0b) : virtual IUnknown
+AVNCOM(IAvnPlatformDragSource, 0e) : virtual IUnknown
 {
     virtual void DoDragDrop(IAvnDataObject* data, AvnDragDropEffects allowedEffects) = 0;
 };
 
-AVNCOM(IAvnPlatformDragSourceEvents, 0c) : virtual IUnknown
+AVNCOM(IAvnPlatformDragSourceEvents, 0f) : virtual IUnknown
 {
     virtual void OnDragDropCompleted () = 0;
 };
 
-AVNCOM(IAvnDataObject, 0d) : virtual IUnknown
+AVNCOM(IAvnDataObject, 10) : virtual IUnknown
 {
     virtual HRESULT Contains(const wchar_t* dataFormat, bool* retOut) = 0;
     
