@@ -82,6 +82,7 @@ public:
     virtual HRESULT CreateWindow(IAvnWindowEvents* cb, IAvnWindow** ppv) = 0;
     virtual HRESULT CreatePopup (IAvnWindowEvents* cb, IAvnPopup** ppv) = 0;
     virtual HRESULT CreatePlatformThreadingInterface(IAvnPlatformThreadingInterface** ppv) = 0;
+    virtual HRESULT CreatePlatformDragSource (IAvnPlatformDragSource** ppv) = 0;
 };
 
 AVNCOM(IAvnWindowBase, 02) : virtual IUnknown

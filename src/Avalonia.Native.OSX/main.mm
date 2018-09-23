@@ -94,6 +94,12 @@ public:
         *ppv = CreatePlatformThreading();
         return S_OK;
     }
+    
+    virtual HRESULT CreatePlatformDragSource (IAvnPlatformDragSource** ppv)
+    {
+        //*ppv =
+        return S_OK;
+    }
 };
 
 extern "C" IAvaloniaNativeFactory* CreateAvaloniaNative()

@@ -68,7 +68,7 @@ namespace Avalonia.Native
 
                 .Bind<IKeyboardDevice>().ToConstant(KeyboardDevice)
                 .Bind<IMouseDevice>().ToConstant(MouseDevice)
-                .Bind<IPlatformDragSource>().ToConstant(new DragSource())
+                .Bind<IPlatformDragSource>().ToConstant(new DragSource(_factory))
                 .Bind<IPlatformSettings>().ToConstant(this)
                 .Bind<IWindowingPlatform>().ToConstant(this)
                 .Bind<ISystemDialogImpl>().ToSingleton<SystemDialogImpl>()
