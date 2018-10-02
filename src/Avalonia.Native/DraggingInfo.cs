@@ -36,9 +36,10 @@ namespace Avalonia.Native
 
         public string GetText()
         {
-            _native.GetText(out IntPtr stringPtr);
+            //_native.GetText(out IntPtr stringPtr);
 
-            return Marshal.PtrToStringAnsi(stringPtr);
+            //return Marshal.PtrToStringAnsi(stringPtr);
+            return "";
         }
     }
 }
