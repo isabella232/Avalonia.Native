@@ -11,7 +11,7 @@ namespace Avalonia.Native
         public WindowImpl(IAvaloniaNativeFactory factory)
         {
             using (var e = new WindowEvents(this))
-                Init(_native = factory.CreateWindow(e));
+                Init(_native = factory.CreateWindow(e), factory.CreateScreens());
         }
 
         class WindowEvents : WindowBaseEvents, IAvnWindowEvents
@@ -21,6 +21,11 @@ namespace Avalonia.Native
             public WindowEvents(WindowImpl parent) : base(parent)
             {
                 _parent = parent;
+            }
+
+            void IAvnWindowEvents.WindowStateChanged(AvnWindowState state)
+            {
+                _parent.WindowStateChanged?.Invoke((WindowState)state);
             }
         }
 
@@ -46,7 +51,18 @@ namespace Avalonia.Native
         {
         }
 
-        public WindowState WindowState { get; set; } = WindowState.Normal;
+        public WindowState WindowState
+        {
+            get
+            {
+                return (WindowState)_native.GetWindowState();
+            }
+            set
+            {
+                _native.SetWindowState((AvnWindowState)value);
+            }
+        }
+
         public Action<WindowState> WindowStateChanged { get; set; }
 
         public void ShowTaskbarIcon(bool value)

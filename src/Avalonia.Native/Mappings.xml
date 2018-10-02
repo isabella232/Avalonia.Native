@@ -24,8 +24,5 @@
         <map param=".*::.*::ppv" return="true"/>
         <map param=".*::.*::ret" return="true"/>
         <map param=".*::.*::retOut" attribute="out" return="true"/>
-        <map param=".*::.*::out.*" attribute="out"/>
-        <map param=".*::.*::bufOut.*" attribute="out buffer" />
-        <map param=".*::.*::bufRet.*" attribute="out buffer" return="true" />
     </mapping>
 </config>

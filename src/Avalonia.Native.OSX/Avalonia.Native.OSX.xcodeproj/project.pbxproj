@@ -10,7 +10,10 @@
 		37364451215842830085FC33 /* DragSource.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3736444E215842830085FC33 /* DragSource.mm */; };
 		37364452215842830085FC33 /* DraggingInfo.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 3736444F215842830085FC33 /* DraggingInfo.hpp */; };
 		37364453215842830085FC33 /* DraggingInfo.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37364450215842830085FC33 /* DraggingInfo.mm */; };
+		37A517B32159597E00FBA241 /* Screens.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37A517B22159597E00FBA241 /* Screens.mm */; };
 		37C09D8821580FE4006A6758 /* SystemDialogs.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37C09D8721580FE4006A6758 /* SystemDialogs.mm */; };
+		37E2330F21583241000CB7E2 /* KeyTransform.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37E2330E21583241000CB7E2 /* KeyTransform.mm */; };
+		5B8BD94F215BFEA6005ED2A7 /* clipboard.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5B8BD94E215BFEA6005ED2A7 /* clipboard.mm */; };
 		AB00E4F72147CA920032A60A /* main.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB00E4F62147CA920032A60A /* main.mm */; };
 		AB661C1E2148230F00291242 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AB661C1D2148230F00291242 /* AppKit.framework */; };
 		AB661C202148286E00291242 /* window.mm in Sources */ = {isa = PBXBuildFile; fileRef = AB661C1F2148286E00291242 /* window.mm */; };
@@ -21,9 +24,13 @@
 		3736444E215842830085FC33 /* DragSource.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DragSource.mm; sourceTree = "<group>"; };
 		3736444F215842830085FC33 /* DraggingInfo.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = DraggingInfo.hpp; sourceTree = "<group>"; };
 		37364450215842830085FC33 /* DraggingInfo.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DraggingInfo.mm; sourceTree = "<group>"; };
+		379860FE214DA0C000CD0246 /* KeyTransform.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KeyTransform.h; sourceTree = "<group>"; };
 		379A4506214D0F6500CC143D /* headers */ = {isa = PBXFileReference; lastKnownFileType = folder; name = headers; path = ../headers; sourceTree = "<group>"; };
+		37A517B22159597E00FBA241 /* Screens.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = Screens.mm; sourceTree = "<group>"; };
 		37C09D8721580FE4006A6758 /* SystemDialogs.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SystemDialogs.mm; sourceTree = "<group>"; };
 		37C09D8A21581EF2006A6758 /* window.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = window.h; sourceTree = "<group>"; };
+		37E2330E21583241000CB7E2 /* KeyTransform.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = KeyTransform.mm; sourceTree = "<group>"; };
+		5B8BD94E215BFEA6005ED2A7 /* clipboard.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = clipboard.mm; sourceTree = "<group>"; };
 		AB00E4F62147CA920032A60A /* main.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = main.mm; sourceTree = "<group>"; };
 		AB661C1D2148230F00291242 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		AB661C1F2148286E00291242 /* window.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = window.mm; sourceTree = "<group>"; };
@@ -55,15 +62,19 @@
 		AB7A61E62147C814003C5833 = {
 			isa = PBXGroup;
 			children = (
+				5B8BD94E215BFEA6005ED2A7 /* clipboard.mm */,
 				379A4506214D0F6500CC143D /* headers */,
 				AB8F7D6A21482D7F0057DBA5 /* platformthreading.mm */,
 				AB661C212148288600291242 /* common.h */,
+				379860FE214DA0C000CD0246 /* KeyTransform.h */,
+				37E2330E21583241000CB7E2 /* KeyTransform.mm */,
 				AB661C1F2148286E00291242 /* window.mm */,
 				37C09D8A21581EF2006A6758 /* window.h */,
 				3736444F215842830085FC33 /* DraggingInfo.hpp */,
 				37364450215842830085FC33 /* DraggingInfo.mm */,
 				3736444E215842830085FC33 /* DragSource.mm */,
 				AB00E4F62147CA920032A60A /* main.mm */,
+				37A517B22159597E00FBA241 /* Screens.mm */,
 				37C09D8721580FE4006A6758 /* SystemDialogs.mm */,
 				AB7A61F02147C815003C5833 /* Products */,
 				AB661C1C2148230E00291242 /* Frameworks */,
@@ -146,9 +157,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5B8BD94F215BFEA6005ED2A7 /* clipboard.mm in Sources */,
 				AB8F7D6B21482D7F0057DBA5 /* platformthreading.mm in Sources */,
 				37364451215842830085FC33 /* DragSource.mm in Sources */,
 				37364453215842830085FC33 /* DraggingInfo.mm in Sources */,
+				37E2330F21583241000CB7E2 /* KeyTransform.mm in Sources */,
+				37A517B32159597E00FBA241 /* Screens.mm in Sources */,
 				AB00E4F72147CA920032A60A /* main.mm in Sources */,
 				37C09D8821580FE4006A6758 /* SystemDialogs.mm in Sources */,
 				AB661C202148286E00291242 /* window.mm in Sources */,

@@ -1,5 +1,6 @@
 #include "com.h"
 #include <stdint.h>
+#include "key.h"
 
 #define AVNCOM(name, id) COMINTERFACE(name, 2e2cda0a, 9ae5, 4f1b, 8e, 20, 08, 1a, 04, 27, 9f, id)
 
@@ -13,6 +14,8 @@ struct IAvnMacOptions;
 struct IAvnPlatformThreadingInterface;
 struct IAvnSystemDialogEvents;
 struct IAvnSystemDialogs;
+struct IAvnScreens;
+struct IAvnClipboard;
 
 struct AvnSize
 {
@@ -34,6 +37,30 @@ struct AvnPoint
     double X, Y;
 };
 
+struct AvnScreen
+{
+    AvnRect Bounds;
+    AvnRect WorkingArea;
+    bool Primary;
+};
+
+enum AvnPixelFormat
+{
+    kAvnRgb565,
+    kAvnRgba8888,
+    kAvnBgra8888
+};
+
+struct AvnFramebuffer
+{
+    void* Data;
+    int Width;
+    int Height;
+    int Stride;
+    AvnVector Dpi;
+    AvnPixelFormat PixelFormat;
+};
+
 enum AvnRawMouseEventType
 {
     LeaveWindow,
@@ -48,9 +75,15 @@ enum AvnRawMouseEventType
     NonClientLeftButtonDown
 };
 
+enum AvnRawKeyEventType
+{
+    KeyDown,
+    KeyUp
+};
+
 enum AvnInputModifiers
 {
-    None = 0,
+    AvnInputModifiersNone = 0,
     Alt = 1,
     Control = 2,
     Shift = 4,
@@ -76,6 +109,13 @@ enum AvnRawDragEventType
     Drop
 };
 
+enum AvnWindowState
+{
+    Normal,
+    Minimized,
+    Maximized,
+};
+
 AVNCOM(IAvaloniaNativeFactory, 01) : virtual IUnknown
 {
 public:
@@ -85,6 +125,8 @@ public:
     virtual HRESULT CreatePopup (IAvnWindowEvents* cb, IAvnPopup** ppv) = 0;
     virtual HRESULT CreatePlatformThreadingInterface(IAvnPlatformThreadingInterface** ppv) = 0;
     virtual HRESULT CreateSystemDialogs (IAvnSystemDialogs** ppv) = 0;
+    virtual HRESULT CreateScreens (IAvnScreens** ppv) = 0;
+    virtual HRESULT CreateClipboard(IAvnClipboard** ppv) = 0;
     virtual HRESULT CreatePlatformDragSource (IAvnPlatformDragSource** ppv) = 0;
 };
 
@@ -93,7 +135,9 @@ AVNCOM(IAvnWindowBase, 02) : virtual IUnknown
     virtual HRESULT Show() = 0;
     virtual HRESULT Hide () = 0;
     virtual HRESULT Close() = 0;
+    virtual HRESULT Activate () = 0;
     virtual HRESULT GetClientSize(AvnSize*ret) = 0;
+    virtual HRESULT GetMaxClientSize(AvnSize* ret) = 0;
     virtual HRESULT GetScaling(double*ret)=0;
     virtual HRESULT Resize(double width, double height) = 0;
     virtual void Invalidate (AvnRect rect) = 0;
@@ -102,6 +146,8 @@ AVNCOM(IAvnWindowBase, 02) : virtual IUnknown
     virtual void SetPosition (AvnPoint point) = 0;
     virtual HRESULT PointToClient (AvnPoint point, AvnPoint*ret) = 0;
     virtual HRESULT PointToScreen (AvnPoint point, AvnPoint*ret) = 0;
+    virtual HRESULT ThreadSafeSetSwRenderedFrame(AvnFramebuffer* fb, IUnknown* dispose) = 0;
+    virtual HRESULT SetTopMost (bool value) = 0;
 };
 
 AVNCOM(IAvnPopup, 03) : virtual IAvnWindowBase
@@ -113,15 +159,18 @@ AVNCOM(IAvnWindow, 04) : virtual IAvnWindowBase
 {
     virtual HRESULT SetCanResize(bool value) = 0;
     virtual HRESULT SetHasDecorations(bool value) = 0;
+    virtual HRESULT SetWindowState(AvnWindowState state) = 0;
+    virtual HRESULT GetWindowState(AvnWindowState*ret) = 0;
 };
 
 AVNCOM(IAvnWindowBaseEvents, 05) : IUnknown
 {
-    virtual HRESULT SoftwareDraw(void* ptr, int stride, int pixelWidth, int pixelHeight, const AvnSize& logicalSize) = 0;
+    virtual HRESULT SoftwareDraw(AvnFramebuffer* fb) = 0;
     virtual void Closed() = 0;
     virtual void Activated() = 0;
     virtual void Deactivated() = 0;
     virtual void Resized(const AvnSize& size) = 0;
+    virtual void PositionChanged (AvnPoint position) = 0;
     virtual void RawMouseEvent (AvnRawMouseEventType type,
                                 unsigned int timeStamp,
                                 AvnInputModifiers modifiers,
@@ -132,12 +181,16 @@ AVNCOM(IAvnWindowBaseEvents, 05) : IUnknown
                                IAvnDataObject* info,
                                AvnDragDropEffects operation,
                                AvnInputModifiers modifiers) = 0;
+    virtual bool RawKeyEvent (AvnRawKeyEventType type, unsigned int timeStamp, AvnInputModifiers modifiers, unsigned int key) = 0;
+    virtual bool RawTextInputEvent (unsigned int timeStamp, const char* text) = 0;
+    virtual void ScalingChanged(double scaling) = 0;
+    virtual void RunRenderPriorityJobs() = 0;
 };
 
 
 AVNCOM(IAvnWindowEvents, 06) : IAvnWindowBaseEvents
 {
-
+    virtual void WindowStateChanged (AvnWindowState state) = 0;
 };
 
 AVNCOM(IAvnMacOptions, 07) : virtual IUnknown
@@ -198,6 +251,19 @@ AVNCOM(IAvnSystemDialogs, 0d) : virtual IUnknown
                                  const char* initialDirectory,
                                  const char* initialFile,
                                  const char* filters) = 0;
+};
+
+AVNCOM(IAvnScreens, 0e) : virtual IUnknown
+{
+    virtual HRESULT GetScreenCount (int* ret) = 0;
+    virtual HRESULT GetScreen (int index, AvnScreen* ret) = 0;
+};
+
+AVNCOM(IAvnClipboard, 0f) : virtual IUnknown
+{
+    virtual HRESULT GetText (void** retOut) = 0;
+    virtual HRESULT SetText (char* text) = 0;
+    virtual HRESULT Clear() = 0;
 };
 
 AVNCOM(IAvnPlatformDragSource, 0e) : virtual IUnknown

@@ -11,7 +11,13 @@ namespace Avalonia.Native
         public PopupImpl(IAvaloniaNativeFactory factory)
         {
             using (var e = new PopupEvents(this))
-                Init(_native = factory.CreatePopup(e));
+                Init(_native = factory.CreatePopup(e), factory.CreateScreens());
+        }
+
+        public override void Dispose()
+        {
+            _native.Dispose();
+            base.Dispose();
         }
 
         class PopupEvents : WindowBaseEvents, IAvnWindowEvents
@@ -21,6 +27,10 @@ namespace Avalonia.Native
             public PopupEvents(PopupImpl parent) : base(parent)
             {
                 _parent = parent;
+            }
+
+            void IAvnWindowEvents.WindowStateChanged(AvnWindowState state)
+            {
             }
         }
     }
