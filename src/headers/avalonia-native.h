@@ -266,17 +266,17 @@ AVNCOM(IAvnClipboard, 0f) : virtual IUnknown
     virtual HRESULT Clear() = 0;
 };
 
-AVNCOM(IAvnPlatformDragSource, 0e) : virtual IUnknown
+AVNCOM(IAvnPlatformDragSource, 10) : virtual IUnknown
 {
     virtual void DoDragDrop(IAvnDataObject* data, AvnDragDropEffects allowedEffects) = 0;
 };
 
-AVNCOM(IAvnPlatformDragSourceEvents, 0f) : virtual IUnknown
+AVNCOM(IAvnPlatformDragSourceEvents, 11) : virtual IUnknown
 {
     virtual void OnDragDropCompleted () = 0;
 };
 
-AVNCOM(IAvnDataObject, 10) : virtual IUnknown
+AVNCOM(IAvnDataObject, 12) : virtual IUnknown
 {
     virtual HRESULT Contains(const wchar_t* dataFormat, bool* retOut) = 0;
     
