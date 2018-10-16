@@ -8,19 +8,22 @@ using Avalonia.Controls.Platform.Surfaces;
 using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Native.Interop;
+using Avalonia.OpenGL;
 using Avalonia.Platform;
 using Avalonia.Rendering;
 using Avalonia.Threading;
 
 namespace Avalonia.Native
 {
-    public class WindowBaseImpl : IWindowBaseImpl, IFramebufferPlatformSurface
+    public class WindowBaseImpl : IWindowBaseImpl,
+        IFramebufferPlatformSurface,
+        IGlPlatformSurface
     {
         IInputRoot _inputRoot;
         IAvnWindowBase _native;
         bool _isClosed;
         private object _syncRoot = new object();
-        private bool _deferredRendering = true;
+        private bool _deferredRendering = false;
         private readonly IMouseDevice _mouse;
         private readonly IKeyboardDevice _keyboard;
         private readonly IStandardCursorFactory _cursorFactory;
@@ -82,6 +85,11 @@ namespace Avalonia.Native
             return fb;
         }
 
+        public IGlPlatformSurfaceRenderTarget CreateGlRenderTarget()
+        {
+            return new GlPlatformSurfaceRenderTarget(_native.CreateGlRenderTarget());
+        }
+
         public Action<Rect> Paint { get; set; }
         public Action<Size> Resized { get; set; }
         public Action Closed { get; set; }
@@ -132,7 +140,7 @@ namespace Avalonia.Native
             void IAvnWindowBaseEvents.SoftwareDraw(ref AvnFramebuffer fb)
             {
                 Dispatcher.UIThread.RunJobs(DispatcherPriority.Render);
-
+                /*
                 _parent._framebuffer = new SavedFramebuffer
                 {
                     Address = fb.Data,
@@ -141,7 +149,7 @@ namespace Avalonia.Native
                     Height = fb.Height,
                     Dpi = new Vector(fb.Dpi.X, fb.Dpi.Y)
                 };
-
+*/
                 _parent.Paint?.Invoke(new Rect(0, 0, fb.Width / (fb.Dpi.X / 96), fb.Height / (fb.Dpi.Y / 96)));
 
             }
@@ -257,7 +265,7 @@ namespace Avalonia.Native
 
         public void Invalidate(Rect rect)
         {
-            if (!_deferredRendering)
+            if (!_deferredRendering && _native != null)
                 _native.Invalidate(new AvnRect { Height = rect.Height, Width = rect.Width, X = rect.X, Y = rect.Y });
         }
 

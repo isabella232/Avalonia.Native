@@ -5,6 +5,7 @@
 #include "window.h"
 #include "KeyTransform.h"
 #include "cursor.h"
+#include <OpenGL/gl.h>
 
 class WindowBaseImpl : public virtual ComSingleObject<IAvnWindowBase, &IID_IAvnWindowBase>, public INSWindowHolder
 {
@@ -299,6 +300,14 @@ public:
              [View addCursorRect:rect cursor:cursor];
              [cursor set];
         }
+    }
+    
+    virtual HRESULT CreateGlRenderTarget(IAvnGlSurfaceRenderTarget** ppv)
+    {
+        if(View == NULL)
+            return E_FAIL;
+        *ppv = ::CreateGlRenderTarget(Window, View);
+        return S_OK;
     }
 
 protected:
@@ -604,6 +613,7 @@ NSArray* AllLoopModes = [NSArray arrayWithObjects: NSDefaultRunLoopMode, NSEvent
     bool _isLeftPressed, _isMiddlePressed, _isRightPressed, _isMouseOver;
     NSEvent* _lastMouseDownEvent;
     bool _lastKeyHandled;
+    NSOpenGLContext* _gl;
 }
 
 - (void)dealloc
@@ -627,12 +637,23 @@ NSArray* AllLoopModes = [NSArray arrayWithObjects: NSDefaultRunLoopMode, NSEvent
     self = [super init];
     _parent = parent;
     _area = nullptr;
+    NSOpenGLPixelFormatAttribute attribs[] =
+    {
+        NSOpenGLPFADoubleBuffer,
+        NSOpenGLPFAColorSize, 32,
+        NSOpenGLPFAStencilSize, 8,
+        NSOpenGLPFADepthSize, 8,
+        0
+    };
+    auto fmt = [[NSOpenGLPixelFormat alloc] initWithAttributes:attribs];
+    _gl = [[NSOpenGLContext alloc] initWithFormat:fmt shareContext:nil];
+
     return self;
 }
 
 - (BOOL)isOpaque
 {
-    return false;
+    return YES;
 }
 
 - (BOOL)acceptsFirstResponder
@@ -697,6 +718,20 @@ NSArray* AllLoopModes = [NSArray arrayWithObjects: NSDefaultRunLoopMode, NSEvent
 
 - (void)drawRect:(NSRect)dirtyRect
 {
+    AvnFramebuffer fb;
+    _parent->BaseEvents->SoftwareDraw(&fb);
+    return;
+    [_gl setView:self];
+    [_gl makeCurrentContext];
+    auto frame = [self frame];
+    glViewport(0,0, frame.size.width, frame.size.height);
+    glClearColor(1, 0, 1,1);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glFlush();
+    [_gl flushBuffer];
+    
+    return;
+    /*
     _parent->BaseEvents->RunRenderPriorityJobs();
     @synchronized (self) {
         if(_swRenderedFrame != NULL)
@@ -721,8 +756,8 @@ NSArray* AllLoopModes = [NSArray arrayWithObjects: NSDefaultRunLoopMode, NSEvent
         .Dpi = AvnVector { .X = w / logicalSize.width * 96, .Y = h / logicalSize.height * 96}
     };
     _parent->BaseEvents->SoftwareDraw(&fb);
-    [self drawFb: &fb];
-    free(ptr);
+    //[self drawFb: &fb];
+    free(ptr);*/
 }
 
 -(void) redrawSelf

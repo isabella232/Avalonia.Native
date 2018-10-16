@@ -17,10 +17,20 @@ struct IAvnScreens;
 struct IAvnClipboard;
 struct IAvnCursor;
 struct IAvnCursorFactory;
+struct IAvnGlFeature;
+struct IAvnGlContext;
+struct IAvnGlDisplay;
+struct IAvnGlSurfaceRenderTarget;
+struct IAvnGlSurfaceRenderingSession;
 
 struct AvnSize
 {
     double Width, Height;
+};
+
+struct AvnPixelSize
+{
+    int Width, Height;
 };
 
 struct AvnRect
@@ -160,6 +170,7 @@ public:
     virtual HRESULT CreateScreens (IAvnScreens** ppv) = 0;
     virtual HRESULT CreateClipboard(IAvnClipboard** ppv) = 0;
     virtual HRESULT CreateCursorFactory(IAvnCursorFactory** ppv) = 0;
+    virtual HRESULT ObtainGlFeature(IAvnGlFeature** ppv) = 0;
 };
 
 AVNCOM(IAvnWindowBase, 02) : IUnknown
@@ -183,6 +194,7 @@ AVNCOM(IAvnWindowBase, 02) : IUnknown
     virtual HRESULT ThreadSafeSetSwRenderedFrame(AvnFramebuffer* fb, IUnknown* dispose) = 0;
     virtual HRESULT SetTopMost (bool value) = 0;
     virtual HRESULT SetCursor(IAvnCursor* cursor) = 0;
+    virtual HRESULT CreateGlRenderTarget(IAvnGlSurfaceRenderTarget** ret) = 0;
 };
 
 AVNCOM(IAvnPopup, 03) : virtual IAvnWindowBase
@@ -314,5 +326,35 @@ AVNCOM(IAvnCursorFactory, 11) : IUnknown
     virtual HRESULT GetCursor (AvnStandardCursorType cursorType, IAvnCursor** retOut) = 0;
 };
 
+
+AVNCOM(IAvnGlFeature, 12) : IUnknown
+{
+    virtual HRESULT ObtainDisplay(IAvnGlDisplay**retOut) = 0;
+    virtual HRESULT ObtainImmediateContext(IAvnGlContext**retOut) = 0;
+};
+
+AVNCOM(IAvnGlDisplay, 13) : IUnknown
+{
+    virtual HRESULT GetSampleCount(int* ret) = 0;
+    virtual HRESULT GetStencilSize(int* ret) = 0;
+    virtual HRESULT ClearContext() = 0;
+    virtual void* GetProcAddress(char* proc) = 0;
+};
+
+AVNCOM(IAvnGlContext, 14) : IUnknown
+{
+    virtual HRESULT MakeCurrent() = 0;
+};
+
+AVNCOM(IAvnGlSurfaceRenderTarget, 15) : IUnknown
+{
+    virtual HRESULT BeginDrawing(IAvnGlSurfaceRenderingSession** ret) = 0;
+};
+
+AVNCOM(IAvnGlSurfaceRenderingSession, 16) : IUnknown
+{
+    virtual HRESULT GetPixelSize(AvnPixelSize* ret) = 0;
+    virtual HRESULT GetScaling(double* ret) = 0;
+};
 
 extern "C" IAvaloniaNativeFactory* CreateAvaloniaNative();
