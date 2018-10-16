@@ -635,6 +635,7 @@ NSArray* AllLoopModes = [NSArray arrayWithObjects: NSDefaultRunLoopMode, NSEvent
 -(AvnView*)  initWithParent: (WindowBaseImpl*) parent
 {
     self = [super init];
+    [self setWantsBestResolutionOpenGLSurface:true];
     _parent = parent;
     _area = nullptr;
     NSOpenGLPixelFormatAttribute attribs[] =
