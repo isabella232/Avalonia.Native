@@ -961,11 +961,6 @@ NSArray* AllLoopModes = [NSArray arrayWithObjects: NSDefaultRunLoopMode, NSEvent
     _lastKeyHandled = _parent->BaseEvents->RawKeyEvent(type, timestamp, modifiers, key);
 }
 
-- (BOOL)performKeyEquivalent:(NSEvent *)event
-{
-    return _lastKeyHandled;
-}
-
 - (void)keyDown:(NSEvent *)event
 {
     [self keyboardEvent:event withType:KeyDown];
